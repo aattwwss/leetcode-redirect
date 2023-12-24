@@ -36,7 +36,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	y2, m2, d2 := lastUpdated.UTC().Date()
 	if y1 != y2 || m1 != m2 || d1 != d2 {
 		problemPath = getProblemPath()
-        lastUpdated = time.Now()
+		lastUpdated = time.Now()
 	}
 	http.Redirect(w, r, baseUrl+problemPath, http.StatusMovedPermanently)
 }
