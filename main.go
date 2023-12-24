@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	_ "embed"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -14,6 +15,9 @@ const (
 )
 
 var (
+	//go:embed about.html
+	about string
+
 	problemPath string
 	lastUpdated time.Time
 )
@@ -21,8 +25,13 @@ var (
 func main() {
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("OK"))
+	})
+	http.HandleFunc("/about", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(about))
 	})
 	http.HandleFunc("/", handler)
+
 	log.Println("Server is listening on :8080...")
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
