@@ -40,7 +40,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		lastUpdated = time.Now()
 		log.Println("Problem path updated to " + problemPath)
 	}
-	http.Redirect(w, r, baseUrl+problemPath, http.StatusMovedPermanently)
+
+	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate, max-age=0")
+	http.Redirect(w, r, baseUrl+problemPath, http.StatusTemporaryRedirect)
 }
 
 type LeetCodeRes struct {
