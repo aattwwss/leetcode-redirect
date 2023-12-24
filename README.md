@@ -1,4 +1,4 @@
 # leetcode-redirect
-A webserver to redirect the user to the problem of the day in leetcode
+A webserver to redirect the user to LeetCodes's daily challenge
 
 Visit https://dailylc.win
