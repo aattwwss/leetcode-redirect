@@ -25,12 +25,13 @@ var (
 func main() {
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("OK"))
 	})
 	http.HandleFunc("/about", func(w http.ResponseWriter, r *http.Request) {
-		//serves the html file in the root folder call about.html
 		w.Write([]byte(about))
 	})
 	http.HandleFunc("/", handler)
+
 	log.Println("Server is listening on :8080...")
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
