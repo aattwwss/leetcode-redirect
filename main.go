@@ -43,7 +43,7 @@ func main() {
 func handler(w http.ResponseWriter, r *http.Request) {
 	y1, m1, d1 := time.Now().UTC().Date()
 	y2, m2, d2 := lastUpdated.UTC().Date()
-	if y1 != y2 || m1 != m2 || d1 != d2 {
+	if problemPath == "" || y1 != y2 || m1 != m2 || d1 != d2 {
 		log.Println("Updating problem path...")
 		problemPath = getProblemPath()
 		lastUpdated = time.Now()
