@@ -15,8 +15,8 @@ const (
 )
 
 var (
-	//go:embed about.html
-	about string
+	//go:embed index.html
+	index string
 
 	problemPath string
 	lastUpdated time.Time
@@ -24,23 +24,25 @@ var (
 
 func main() {
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		log.Println("OK")
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 	})
-	http.HandleFunc("/about", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(about))
+
+	http.HandleFunc("/leetcode", leetcodeHandler)
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(index))
 	})
-	http.HandleFunc("/", handler)
 
 	log.Println("Server is listening on :8080...")
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		log.Println("Error:", err)
 	}
-
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func leetcodeHandler(w http.ResponseWriter, r *http.Request) {
 	y1, m1, d1 := time.Now().UTC().Date()
 	y2, m2, d2 := lastUpdated.UTC().Date()
 	if problemPath == "" || y1 != y2 || m1 != m2 || d1 != d2 {
