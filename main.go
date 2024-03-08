@@ -10,19 +10,21 @@ import (
 )
 
 const (
-	baseUrl    = "https://leetcode.com"
-	graphQlUrl = baseUrl + "/graphql"
+	baseUrl     = "https://leetcode.com"
+	graphQlUrl  = baseUrl + "/graphql"
+	defaultPath = "/problemset"
 )
 
 var (
 	//go:embed index.html
 	index string
 
-	problemPath string
+	problemPath = defaultPath
 	lastUpdated time.Time
 )
 
 func main() {
+	log.Println(problemPath)
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		log.Println("OK")
 		w.WriteHeader(http.StatusOK)
@@ -45,13 +47,16 @@ func main() {
 func leetcodeHandler(w http.ResponseWriter, r *http.Request) {
 	y1, m1, d1 := time.Now().UTC().Date()
 	y2, m2, d2 := lastUpdated.UTC().Date()
-	if problemPath == "" || y1 != y2 || m1 != m2 || d1 != d2 {
-		log.Println("Updating problem path...")
-		problemPath = getProblemPath()
-		lastUpdated = time.Now()
-		log.Println("Problem path updated to " + problemPath)
+	if problemPath == defaultPath || y1 != y2 || m1 != m2 || d1 != d2 {
+		foundProblemPath := getProblemPath()
+		log.Println("found problem path: ", foundProblemPath)
+		if len(foundProblemPath) != 0 {
+			log.Println("Updating problem path...")
+			problemPath = foundProblemPath
+			lastUpdated = time.Now()
+			log.Println("Problem path updated to " + problemPath)
+		}
 	}
-
 	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate, max-age=0")
 	http.Redirect(w, r, baseUrl+problemPath, http.StatusTemporaryRedirect)
 }
@@ -84,6 +89,5 @@ func getProblemPath() string {
 	defer res.Body.Close()
 	var leetCodeRes LeetCodeRes
 	json.NewDecoder(res.Body).Decode(&leetCodeRes)
-	problemPath = leetCodeRes.Data.ActiveDailyCodingChallengeQuestion.Link
-	return problemPath
+	return leetCodeRes.Data.ActiveDailyCodingChallengeQuestion.Link
 }
